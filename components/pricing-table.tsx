@@ -95,7 +95,7 @@ export function PricingTable({
   };
 
   const addons = [
-    { title: "Poster Designing", price: "₹800/month", desc: "Get 5 unique custom-designed posters every month." },
+    { title: "Poster Designing", price: "₹800/month", desc: "Get 15 (Rs.60/per poster)[for monthly plan 1 poster is free.] unique custom-designed posters every month." },
     { title: "SEO Optimization", price: "₹600 one-time", desc: "Keyword setup, meta tags, and search engine optimization." },
   ];
 
