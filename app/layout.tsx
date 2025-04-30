@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import BottomHeader from "@/components/layout/bottom-header";
-
+import og from '@/public/1.jpg'
 
 const helvetica = localFont({
   src: [
@@ -56,9 +56,17 @@ export const metadata: Metadata = {
     title: "kspyn – Website Design & Development Agency in Kerala",
     description:
       "kspyn builds high-performance websites and custom web solutions for clients across Kerala and India. Elevate your brand with our modern web design and development services.",
-    url: "https://kspyn.in",
+    url: "https://kspyn.vercel.app",
     siteName: "kspyn",
     locale: "en_IN",
+    images: [
+      {
+        url: og.src,
+        width: 1200,
+        height: 630,
+        alt: "kspyn – Website Design & Development Agency in Kerala",
+      },
+    ],
     type: "website",
   },
 
@@ -68,6 +76,7 @@ export const metadata: Metadata = {
     description:
       "Looking for a web design agency in Kerala? kspyn offers stunning, SEO-friendly websites, landing pages, and more.",
     creator: "@kspynweb", // Optional: Add your Twitter handle
+    images: [og.src],
   },
 
   icons: {
