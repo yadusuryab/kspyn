@@ -3,11 +3,17 @@ import TitleHeader from "@/components/layout/title-header";
 import React from "react";
 import dg from '@/public/dg.png';
 import bc from '@/public/bc.png';
-
+import sz from '@/public/sz.png';
 import ms from '@/public/ms.png';
 import Head from "next/head";
 
 const works = [
+  {
+    title: "Stylezone",
+    type: "Fashion Accessories Store",
+    url: "https://thestylezone.in",
+    ogImage: sz.src, // Replace with actual OG image or leave blank for fallback
+  },
   {
     title: "Deltagarage",
     type: "Car Accessories",
