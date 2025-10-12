@@ -9,10 +9,25 @@ import Head from "next/head";
 
 const works = [
   {
-    title: "Stylezone",
+    title: "Traft",
     type: "Fashion Accessories Store",
-    url: "https://thestylezone.in",
-    ogImage: sz.src, // Replace with actual OG image or leave blank for fallback
+    url: "https://traft.in",
+  },
+  {
+    title: "Footex",
+    type: "Fashion Accessories Store",
+    url: "https://footex.in",
+  },
+  {
+    title: "Groovex",
+    type: "Fashion Accessories Store",
+    url: "https://groovex.myshopigo.shop",
+  },
+  {
+    title: "Footmart",
+    type: "Online shoe store",
+    url: "https://footmart.co.in",
+    ogImage: "", // No OG image, fallback to gradient
   },
   {
     title: "Deltagarage",
@@ -32,11 +47,22 @@ const works = [
     url: "https://brandcorner.co.in",
     ogImage: bc.src,
   },
+ 
   {
-    title: "Footmart",
-    type: "Online shoe store",
-    url: "https://footmart.co.in",
-    ogImage: "", // No OG image, fallback to gradient
+    title: "Stylezone",
+    type: "Fashion Accessories Store",
+    url: "https://thestylezone.in",
+    ogImage: sz.src, // Replace with actual OG image or leave blank for fallback
+  },
+  {
+    title: "Trendy Hub",
+    type: "Fashion Accessories Store",
+    url: "https://trendyhub.myshopigo.shop",
+  },
+  {
+    title: "Lumo Shopy",
+    type: "Fashion Accessories Store",
+    url: "https://lumoshopy.myshopigo.shop",
   },
 ];
 
@@ -44,10 +70,10 @@ function WorkPage() {
   return (
     <div className="min-h-screen text-white">
       <Head>
-        <title>Our Work – Web Projects by Kspyn</title>
+        <title>Our Work – Web Projects by shopigo</title>
         <meta
           name="description"
-          content="See our recent web design and development projects. Kspyn builds responsive websites and ecommerce platforms for businesses across Kerala."
+          content="See our recent web design and development projects. shopigo builds responsive websites and ecommerce platforms for businesses across Kerala."
         />
         <script
           type="application/ld+json"
@@ -60,13 +86,13 @@ function WorkPage() {
                   "@type": "ListItem",
                   "position": 1,
                   "name": "Home",
-                  "item": "https://kspyn.in"
+                  "item": "https://shopigo.in"
                 },
                 {
                   "@type": "ListItem",
                   "position": 2,
                   "name": "Work",
-                  "item": "https://kspyn.in/work"
+                  "item": "https://shopigo.in/work"
                 }
               ]
             })

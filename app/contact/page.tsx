@@ -8,10 +8,10 @@ function page() {
   return (
     <div>
         <Head>
-        <title>Contact kspyn – Let's Build Your Website</title>
+        <title>Contact shopigo – Let's Build Your Website</title>
         <meta
           name="description"
-          content="Get in touch with Kspyn, a web design and development agency in Kerala. Reach us for stunning websites, ecommerce stores, and digital solutions."
+          content="Get in touch with shopigo, a web design and development agency in Kerala. Reach us for stunning websites, ecommerce stores, and digital solutions."
         />
         <script
           type="application/ld+json"
@@ -24,13 +24,13 @@ function page() {
                   "@type": "ListItem",
                   "position": 1,
                   "name": "Home",
-                  "item": "https://kspyn.in"
+                  "item": "https://shopigo.in"
                 },
                 {
                   "@type": "ListItem",
                   "position": 2,
                   "name": "Contact",
-                  "item": "https://kspyn.in/contact"
+                  "item": "https://shopigo.in/contact"
                 }
               ]
             })
@@ -49,8 +49,8 @@ function page() {
           </div>{" "}
           <div className="mt-2">
             <hr />
-            <Link href={"mailto:kspynsolutions@gmail.com"}>
-              <Button variant={"link"}>kspynsolutions@gmail.com</Button>
+            <Link href={"mailto:shopigosolutions@gmail.com"}>
+              <Button variant={"link"}>shopigosolutions@gmail.com</Button>
             </Link>
           </div>
         </div>
@@ -79,36 +79,36 @@ function page() {
           </div>{" "}
           <div className="mt-2">
             <hr />
-            <Link href={"https://instagram.com/ks.pyn"}>
+            <Link href={"https://instagram.com/getshopigo"}>
               <Button variant={"link"}>Instagram</Button>
             </Link>
 
             <hr />
-            <Link href={"https://www.facebook.com/kspyn"}>
+            <Link href={"https://www.facebook.com/getshopigo"}>
               <Button variant={"link"}>Facebook</Button>
             </Link>
             <hr />
-            <Link href={"https://www.youtube.com/@kspyn"}>
+            <Link href={"https://www.youtube.com/@getshopigo"}>
               <Button variant={"link"}>Youtube</Button>
             </Link>
             <hr />
-            <Link href={"https://www.behance.net/kspyn"}>
+            <Link href={"https://www.behance.net/getshopigo"}>
               <Button variant={"link"}>Behance</Button>
             </Link>
             <hr />
-            <Link href={"https://dribbble.com/kspyn"}>
+            <Link href={"https://dribbble.com/getshopigo"}>
               <Button variant={"link"}>Dribbble</Button>
             </Link>
             <hr />
-            <Link href={"https://printerest.com/kspynweb"}>
+            <Link href={"https://printerest.com/getshopigo"}>
               <Button variant={"link"}>Printerest</Button>
             </Link>
             <hr />
-            <Link href={"https://threads.net/ks.pyn"}>
+            <Link href={"https://threads.net/getshopigo"}>
               <Button variant={"link"}>Thread</Button>
             </Link>
             <hr />
-            <Link href={" https://www.x.com/kspynweb"}>
+            <Link href={" https://www.x.com/getshopigo"}>
               <Button variant={"link"}>X</Button>
             </Link>
           </div>
@@ -124,8 +124,8 @@ function page() {
           </div>
           <div className="mt-2">
             <hr />
-            <Link href={"mailto:kspynsolutions@gmail.com"}>
-              <Button variant={"link"}>kspynsolutions@gmail.com</Button>
+            <Link href={"mailto:kspynosolutions@gmail.com"}>
+              <Button variant={"link"}>kspynosolutions@gmail.com</Button>
             </Link>
           </div>
         </div>

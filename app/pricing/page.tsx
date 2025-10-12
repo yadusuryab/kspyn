@@ -7,10 +7,10 @@ function page() {
   return (
     <div>
        <Head>
-        <title>Website Pricing – Affordable Plans by kspyn</title>
+        <title>Website Pricing – Affordable Plans by shopigo</title>
         <meta
           name="description"
-          content="Explore our affordable website pricing plans. Kspyn offers web design, development, and ecommerce websites at the best rates in Kerala, India."
+          content="Explore our affordable website pricing plans. shopigo offers web design, development, and ecommerce websites at the best rates in Kerala, India."
         />
         <script
           type="application/ld+json"
@@ -23,13 +23,13 @@ function page() {
                   "@type": "ListItem",
                   "position": 1,
                   "name": "Home",
-                  "item": "https://kspyn.in"
+                  "item": "https://shopigo.in"
                 },
                 {
                   "@type": "ListItem",
                   "position": 2,
                   "name": "Pricing",
-                  "item": "https://kspyn.in/pricing"
+                  "item": "https://shopigo.in/pricing"
                 }
               ]
             })

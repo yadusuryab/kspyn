@@ -10,7 +10,7 @@ interface TitleHeaderProps {
 }
 
 const TitleHeader = ({ 
-  title = "kspyn", 
+  title = "shopigo", 
   subtitle, 
   align = 'center',
   overlay = false,
@@ -37,7 +37,7 @@ const TitleHeader = ({
 
       
           <p className={` ${titleSizes.subtitle} font-medium text-muted-foreground`}>
-            &copy; KSPYN 2025
+            &copy; shopigo 2025
           </p>
      
       </div>

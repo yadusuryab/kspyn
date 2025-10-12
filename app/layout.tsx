@@ -28,16 +28,16 @@ const helvetica = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "kspyn – Website Design & Development Agency in Kerala | Web Solutions India",
+  title: "shopigo – Website Design & Development Agency in Kerala | Web Solutions India",
   description:
-    "kspyn is a full-service web design and development agency in Kerala, India. We specialize in creating stunning websites, custom web apps, and high-converting landing pages. Contact us for modern digital solutions.",
+    "shopigo is a full-service web design and development agency in Kerala, India. We specialize in creating stunning websites, custom web apps, and high-converting landing pages. Contact us for modern digital solutions.",
 
   keywords: [
     "web design Kerala",
     "website development Kerala",
     "web design agency India",
     "website agency Kerala",
-    "kspyn",
+    "shopigo",
     "poster design Kerala",
     "website developers Kerala",
     "Next.js agency India",
@@ -47,24 +47,24 @@ export const metadata: Metadata = {
     "responsive web development India"
   ],
 
-  metadataBase: new URL("https://kspyn.vercel.app"),
+  metadataBase: new URL("https://myshopigo.shop"),
   alternates: {
     canonical: "/",
   },
 
   openGraph: {
-    title: "kspyn – Website Design & Development Agency in Kerala",
+    title: "shopigo – Website Design & Development Agency in Kerala",
     description:
-      "kspyn builds high-performance websites and custom web solutions for clients across Kerala and India. Elevate your brand with our modern web design and development services.",
-    url: "https://kspyn.vercel.app",
-    siteName: "kspyn",
+      "shopigo builds high-performance websites and custom web solutions for clients across Kerala and India. Elevate your brand with our modern web design and development services.",
+    url: "https://myshopigo.shop",
+    siteName: "shopigo",
     locale: "en_IN",
     images: [
       {
         url: og.src,
         width: 1200,
         height: 630,
-        alt: "kspyn – Website Design & Development Agency in Kerala",
+        alt: "shopigo – Website Design & Development Agency in Kerala",
       },
     ],
     type: "website",
@@ -72,10 +72,10 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "kspyn – Website Design & Development Agency in Kerala",
+    title: "shopigo – Website Design & Development Agency in Kerala",
     description:
-      "Looking for a web design agency in Kerala? kspyn offers stunning, SEO-friendly websites, landing pages, and more.",
-    creator: "@kspynweb", // Optional: Add your Twitter handle
+      "Looking for a web design agency in Kerala? shopigo offers stunning, SEO-friendly websites, landing pages, and more.",
+    creator: "@shopigoweb", // Optional: Add your Twitter handle
     images: [og.src],
   },
 
