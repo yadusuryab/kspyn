@@ -49,8 +49,8 @@ function page() {
           </div>{" "}
           <div className="mt-2">
             <hr />
-            <Link href={"mailto:shopigosolutions@gmail.com"}>
-              <Button variant={"link"}>shopigosolutions@gmail.com</Button>
+            <Link href={"mailto:kspynsolutions@gmail.com"}>
+              <Button variant={"link"}>kspynsolutions@gmail.com</Button>
             </Link>
           </div>
         </div>
@@ -124,8 +124,8 @@ function page() {
           </div>
           <div className="mt-2">
             <hr />
-            <Link href={"mailto:kspynosolutions@gmail.com"}>
-              <Button variant={"link"}>kspynosolutions@gmail.com</Button>
+            <Link href={"mailto:kspynsolutions@gmail.com"}>
+              <Button variant={"link"}>kspynsolutions@gmail.com</Button>
             </Link>
           </div>
         </div>
