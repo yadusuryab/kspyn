@@ -12,20 +12,21 @@ import slide3 from "@/public/3.jpg";
 const slides = [
   {
     image: slide1,
-    title: "Design That Speaks",
-    subtitle: "Purposeful Experiences",
+    title: "Sell With Confidence",
+    subtitle: "Shopigo stores convert better.",
   },
   {
     image: slide2,
-    title: "Inspired by Origins",
-    subtitle: "Cultural Roots",
+    title: "Built for Growth",
+    subtitle: "Scale your online sales fast.",
   },
   {
     image: slide3,
-    title: "Designed with Depth",
-    subtitle: "Immersive Flow",
+    title: "Smooth Shopping",
+    subtitle: "A clean flow customers love.",
   },
 ];
+
 
 export  function Hero() {
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -64,8 +65,8 @@ export  function Hero() {
                 objectFit="cover"
                 priority
               />
-              <div className="absolute bottom-20 left-10 text-white z-10">
-              <p className="text-lg md:text-2xl drop-shadow-md">
+              <div className="absolute bottom-40 left-5 text-white z-10">
+              <p className="text-md md:text-2xl text-muted-foreground drop-shadow-md">
                   {slide.subtitle}
                 </p>
                 <h2 className="text-4xl md:text-6xl tracking-tighter font-semibold mb-2 drop-shadow-lg">
@@ -83,13 +84,13 @@ export  function Hero() {
         {slides.map((_, index) => (
           <div
             key={index}
-            className="h-1 w-full bg-white/30 overflow-hidden rounded"
+            className="h-1 w-full bg-white/30 overflow-hidden rounded-full"
           >
             <div
               ref={(el:any) => (progressRefs.current[index] = el)}
-              className={`h-full bg-white transition-all duration-[5000ms] ${
-                index === selectedIndex ? "w-full" : "w-0"
-              }`}
+              className={`h-full bg-white transition-all duration-[5000ms] w-0  ${index < selectedIndex ? "w-full" : ""}
+    ${index === selectedIndex ? "w-full" : ""}
+    ${index > selectedIndex ? "w-0" : ""}`}
             />
           </div>
         ))}

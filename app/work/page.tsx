@@ -9,6 +9,11 @@ import Head from "next/head";
 
 const works = [
   {
+    title: "Traft Track",
+    type: "Product Tracking Website",
+    url: "https://track.traft.in",
+  },
+  {
     title: "The NorthSide",
     type: "Fashion Accessories Store",
     url: "https://thenorthside.in",
