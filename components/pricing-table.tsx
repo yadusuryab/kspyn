@@ -7,7 +7,7 @@ import { CheckIcon, ArrowRightIcon } from "@radix-ui/react-icons";
 import NumberFlow from "@number-flow/react";
 import { Badge } from "./ui/badge";
 
-export type PlanLevel = "starter" | "pro" | "all" | string;
+export type PlanLevel = "online-lite" | "online-pro" | "wa-lite" | "wa-pro" | "track-lite" | "track-pro" | string;
 
 export interface PricingFeature {
   name: string;
@@ -20,84 +20,59 @@ export interface PricingPlan {
   price: {
     yearly: number;
   };
+  description: string;
   popular?: boolean;
+}
+
+export interface Addon {
+  title: string;
+  price: string;
+  desc: string;
+  originalPrice?: string;
 }
 
 export interface PricingTableProps extends React.HTMLAttributes<HTMLDivElement> {
   features: PricingFeature[];
   plans: PricingPlan[];
-  onPlanSelect?: (plan: PlanLevel) => void;
+  onPlanSelect?: (plan: PricingPlan) => void;
   defaultPlan?: PlanLevel;
   defaultInterval?: "monthly" | "yearly";
   containerClassName?: string;
   buttonClassName?: string;
-  whatsappNumber?: string; // Add this prop for WhatsApp number
+  selectedAddons: string[];
+  onAddonToggle: (addonTitle: string) => void;
+  addons: Addon[];
+  onWhatsAppRedirect: () => void;
+  totalAmount: number;
 }
 
 export function PricingTable({
   features,
   plans,
   onPlanSelect,
-  defaultPlan = "pro",
-  defaultInterval = "monthly",
+  defaultPlan = "online-lite",
+  defaultInterval = "yearly",
   className,
   containerClassName,
   buttonClassName,
-  whatsappNumber = "+919495314108", // Default number, replace with yours
+  selectedAddons,
+  onAddonToggle,
+  addons,
+  onWhatsAppRedirect,
+  totalAmount,
   ...props
 }: PricingTableProps) {
   const [isYearly, setIsYearly] = React.useState(defaultInterval === "yearly");
   const [selectedPlan, setSelectedPlan] = React.useState<PlanLevel>(defaultPlan);
-  const [selectedAddons, setSelectedAddons] = React.useState<string[]>([]);
 
-  const handlePlanSelect = (plan: PlanLevel) => {
-    setSelectedPlan(plan);
+  const handlePlanSelect = (plan: PricingPlan) => {
+    setSelectedPlan(plan.level);
     onPlanSelect?.(plan);
   };
 
-  const toggleAddon = (addonTitle: string) => {
-    setSelectedAddons(prev =>
-      prev.includes(addonTitle)
-        ? prev.filter(item => item !== addonTitle)
-        : [...prev, addonTitle]
-    );
+  const getPlanDescription = (level: PlanLevel) => {
+    return plans.find(p => p.level === level)?.description || "";
   };
-
-  const handleWhatsAppRedirect = () => {
-    const selectedPlanObj = plans.find(p => p.level === selectedPlan);
-    const selectedFeatures = features.filter(f => f.included === selectedPlan);
-    
-    const planPrice = isYearly 
-      ? selectedPlanObj?.price.yearly 
-      : selectedPlanObj?.price.yearly;
-
-    // Format the message
-    let message = `Hi, I'm interested in the ${selectedPlanObj?.name} plan.\n\n`;
-    message += `*Plan Price:* ₹${planPrice}\n\n`;
-    message += `*Included Features:*\n`;
-    selectedFeatures.forEach(f => message += `- ${f.name}\n`);
-    
-    if (selectedAddons.length > 0) {
-      message += `\n*Selected Add-ons:*\n`;
-      addons.forEach(addon => {
-        if (selectedAddons.includes(addon.title)) {
-          message += `- ${addon.title} (${addon.price})\n`;
-        }
-      });
-    }
-    
-
-    // Encode the message for URL
-    const encodedMessage = encodeURIComponent(message);
-    
-    // Open WhatsApp with the message
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
-  };
-
-  const addons = [
-    { title: "Poster Designing", price: "₹800/month", desc: "Get 15 (Rs.60/per poster)[for monthly plan 1 poster is free.] unique custom-designed posters every month." },
-    { title: "SEO Optimization", price: "₹600 one-time", desc: "Keyword setup, meta tags, and search engine optimization." },
-  ];
 
   return (
     <section
@@ -108,102 +83,191 @@ export function PricingTable({
       )}
     >
       <div
-        className={cn("w-full max-w-3xl mx-auto px-4", containerClassName)}
+        className={cn("w-full max-w-7xl mx-auto px-4", containerClassName)}
         {...props}
       >
-        <div className="flex flex-col sm:flex-row md:mb-0 mb-8">
+        {/* Plan Selection Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {plans.map((plan) => (
-            <button
-              key={plan.name}
-              type="button"
-              onClick={() => handlePlanSelect(plan.level)}
+            <div
+              key={plan.level}
               className={cn(
-                "flex-1 p-4 text-left transition-all",
-                "border ",
-                selectedPlan === plan.level &&
-                  "ring-2 "
+                "border rounded-xl p-6 transition-all cursor-pointer",
+                "hover:shadow-lg hover:border-primary/50",
+                selectedPlan === plan.level
+                  ? "ring-2 ring-primary border-primary shadow-lg"
+                  : "border-border",
+                plan.popular ? "relative bg-gradient-to-b from-primary/5 to-transparent" : ""
               )}
+              onClick={() => handlePlanSelect(plan)}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xl font-bold tracking-tighter">{plan.name}</span>
-                {plan.popular && (
-                  <span className="text-xs bg-primary text-background px-2 py-0.5 rounded-2full">
-                    Popular
-                  </span>
+              {plan.popular && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-primary text-primary-foreground px-3 py-1">
+                    Most Popular
+                  </Badge>
+                </div>
+              )}
+              
+              <div className="text-center mb-4">
+                <h3 className="text-xl font-bold tracking-tighter">{plan.name}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{plan.description}</p>
+              </div>
+              
+              <div className="text-center mb-4">
+                <div className="flex items-baseline justify-center gap-1">
+                  <span className="text-2xl font-bold">₹</span>
+                  <NumberFlow
+                    value={plan.price.yearly}
+                    className="text-3xl font-bold"
+                  />
+                </div>
+                <p className="text-sm text-muted-foreground">one-time payment</p>
+              </div>
+
+              <div className="space-y-2">
+                {features
+                  .filter(feature => feature.included === plan.level)
+                  .slice(0, 4)
+                  .map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <CheckIcon className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-sm">{feature.name}</span>
+                    </div>
+                  ))}
+                {features.filter(feature => feature.included === plan.level).length > 4 && (
+                  <div className="text-sm text-muted-foreground text-center">
+                    +{features.filter(feature => feature.included === plan.level).length - 4} more features
+                  </div>
                 )}
               </div>
-              <div className="flex items-baseline gap-1">
-                <NumberFlow
-                  format={{
-                    style: "currency",
-                    currency: "INR",
-                    trailingZeroDisplay: "stripIfInteger",
-                  }}
-                  value={isYearly ? plan.price.yearly : plan.price.yearly}
-                  className="text-2xl font-bold"
-                />
-              </div>
-            </button>
+            </div>
           ))}
         </div>
 
-        <div className="border  overflow-hidden">
+        {/* Selected Plan Features */}
+        <div className="border rounded-lg overflow-hidden mb-8">
           <div className="overflow-x-auto">
-            <div className="w-full divide-y divide-zinc-200 dark:divide-zinc-800">
-              <div className="flex items-center p-4 ">
-                <div className="flex-1 flex gap-2 text-xl uppercase items-center font-bold">{selectedPlan} <Badge variant={'secondary'}>Features</Badge></div>
+            <div className="w-full divide-y divide-border">
+              <div className="flex items-center p-4 bg-muted/50">
+                <div className="flex-1 flex gap-2 text-xl uppercase items-center font-bold">
+                  {plans.find(p => p.level === selectedPlan)?.name} 
+                  <Badge variant={'secondary'}>Features</Badge>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {getPlanDescription(selectedPlan)}
+                </div>
               </div>
-              {features.map(
-                (feature) =>
-                  feature.included === selectedPlan && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-6">
+                {features
+                  .filter(feature => feature.included === selectedPlan)
+                  .map((feature, index) => (
                     <div
-                      key={feature.name}
-                      className={cn("flex items-center p-4 transition-colors")}
+                      key={index}
+                      className="flex items-center gap-3 p-3 rounded-lg bg-muted/30"
                     >
-                      <div className="flex-1 tracking-tight">{feature.name}</div>
+                      <CheckIcon className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span className="text-sm">{feature.name}</span>
                     </div>
-                  )
-              )}
+                  ))}
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="text-center text-2xl font-semibold mt-4">Add-Ons</div>
+        {/* Add-ons Section */}
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold mb-2">Premium Add-ons</h2>
+          <p className="text-muted-foreground">Enhance your store with these powerful features</p>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {addons.map((addon, idx) => (
             <div 
               key={idx} 
-              onClick={() => toggleAddon(addon.title)}
+              onClick={() => onAddonToggle(addon.title)}
               className={cn(
-                "border p-6 shadow-md cursor-pointer transition-all",
+                "border rounded-xl p-6 shadow-sm cursor-pointer transition-all relative",
+                "hover:shadow-lg hover:border-primary/50",
                 selectedAddons.includes(addon.title) 
-                  ? "ring-2" 
-                  : "hover:shadow-lg"
+                  ? "ring-2 ring-primary border-primary bg-primary/5" 
+                  : "border-border"
               )}
             >
+              {addon.originalPrice && (
+                <div className="absolute -top-2 -right-2">
+                  <Badge variant="secondary" className="text-xs line-through">
+                    {addon.originalPrice}
+                  </Badge>
+                </div>
+              )}
+              
               <h3 className="text-xl font-semibold mb-2">{addon.title}</h3>
-              <p className="text-muted-foreground mb-2">{addon.desc}</p>
-              <span className="text-lg font-bold">{addon.price}</span>
-              <div className="mt-2">
-                {selectedAddons.includes(addon.title) ? (
-                  <CheckIcon className="w-5 h-5 text-white" />
-                ) : (
-                  <div className="w-5 h-5 border rounded-md border-zinc-300" />
+              <div className="flex items-baseline gap-2 mb-3">
+                <span className="text-2xl font-bold text-primary">{addon.price}</span>
+                {addon.originalPrice && (
+                  <span className="text-sm text-muted-foreground line-through">
+                    {addon.originalPrice}
+                  </span>
                 )}
+              </div>
+              <p className="text-muted-foreground mb-4 text-sm">{addon.desc}</p>
+              
+              <div className="flex items-center justify-between">
+                <span className={cn(
+                  "text-sm font-medium",
+                  selectedAddons.includes(addon.title) ? "text-primary" : "text-muted-foreground"
+                )}>
+                  {selectedAddons.includes(addon.title) ? "Selected" : "Click to select"}
+                </span>
+                <div className={cn(
+                  "w-6 h-6 rounded-full border-2 flex items-center justify-center",
+                  selectedAddons.includes(addon.title) 
+                    ? "bg-primary border-primary" 
+                    : "border-border"
+                )}>
+                  {selectedAddons.includes(addon.title) && (
+                    <CheckIcon className="w-4 h-4 text-white" />
+                  )}
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-8 text-center">
+        {/* Total & CTA */}
+        <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl p-6 mb-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+              <h3 className="text-xl font-bold mb-2">Your Selection</h3>
+              <p className="text-muted-foreground">
+                {plans.find(p => p.level === selectedPlan)?.name} + {selectedAddons.length} add-ons
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="text-2xl font-bold text-primary">
+                ₹{totalAmount.toLocaleString()}
+              </div>
+              <div className="text-sm text-muted-foreground">Total one-time investment</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center">
           <Button
-            className="w-full"
-            onClick={handleWhatsAppRedirect}
+            size="lg"
+            className={cn(
+              "px-8 py-6 text-lg font-semibold",
+              buttonClassName
+            )}
+            onClick={onWhatsAppRedirect}
           >
-            Book your {plans.find((p) => p.level === selectedPlan)?.name}
-            <ArrowRightIcon className="w-4 h-4 ml-2" />
+            Start Your Project - ₹{totalAmount.toLocaleString()}
+            <ArrowRightIcon className="w-5 h-5 ml-2" />
           </Button>
+          <p className="text-sm text-muted-foreground mt-3">
+            No advance payment required. Discuss your requirements first.
+          </p>
         </div>
       </div>
     </section>

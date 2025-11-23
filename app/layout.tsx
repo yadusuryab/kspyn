@@ -28,7 +28,7 @@ const helvetica = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "shopigo – Website Design & Development Agency in Kerala | Web Solutions India",
+  title: "Shopigo Commerce",
   description:
     "shopigo is a full-service web design and development agency in Kerala, India. We specialize in creating stunning websites, custom web apps, and high-converting landing pages. Contact us for modern digital solutions.",
 
