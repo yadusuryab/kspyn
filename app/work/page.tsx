@@ -9,15 +9,11 @@ import Head from "next/head";
 
 const works = [
   {
-    title: "Traft Track",
-    type: "Product Tracking Website",
-    url: "https://track.traft.in",
-  },
-  {
-    title: "The NorthSide",
+    title: "Trendzo",
     type: "Fashion Accessories Store",
-    url: "https://thenorthside.in",
+    url: "https://trendzoonline.in",
   },
+  
   {
     title: "Traft",
     type: "Fashion Accessories Store",
@@ -27,6 +23,17 @@ const works = [
     title: "Footex",
     type: "Fashion Accessories Store",
     url: "https://footex.in",
+  },
+  {
+    title: "The NorthSide",
+    type: "Fashion Accessories Store",
+    url: "https://thenorthside.in",
+  },
+ 
+  {
+    title: "Traft Track",
+    type: "Product Tracking Website",
+    url: "https://track.traft.in",
   },
   {
     title: "Groovex",
