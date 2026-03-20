@@ -9,6 +9,16 @@ import Head from "next/head";
 
 const works = [
   {
+    title: "Woko",
+    type: "Fashion Accessories Store",
+    url: "https://wokoonline.in",
+  },
+  {
+    title: "Kicksnot",
+    type: "Shoe Store",
+    url: "https://kicksnot.in",
+  },
+  {
     title: "Trendzo",
     type: "Fashion Accessories Store",
     url: "https://trendzoonline.in",
