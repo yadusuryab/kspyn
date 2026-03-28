@@ -24,8 +24,8 @@ const CATEGORIES = [
 ];
 
 const PLANS = [
-  { value: 'WhatsApp Orders', label: 'WhatsApp Orders', price: '₹5,000', icon: '💬' },
-  { value: 'Online Payment', label: 'Online Payment', price: '₹7,000', icon: '💳', popular: true },
+  { value: 'WhatsApp Orders', label: 'WhatsApp Orders', price: '₹3,000', icon: '💬' },
+  { value: 'Online Payment', label: 'Online Payment', price: '₹4,000', icon: '💳', popular: true },
   { value: 'Custom', label: 'Custom / Offer Based', price: 'Contact Us', icon: '🚀' },
 ];
 
@@ -247,7 +247,6 @@ export default function OnboardingPage() {
                             )}
                           </div>
                         </div>
-                        <span className="text-sm font-bold text-white shrink-0">{plan.price}</span>
                         <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center ${
                           form.websiteType === plan.value ? 'border-indigo-500 bg-indigo-500' : 'border-white/40'
                         }`}>
