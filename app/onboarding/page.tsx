@@ -1,772 +1,349 @@
-// app/onboarding/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
-import TitleHeader from "@/components/layout/title-header";
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 
-// Sample website designs for preview
-const websiteDesigns = [
-  {
-    id: 1,
-    name: "Modern Minimal",
-    image: "/api/placeholder/400/250",
-    description: "Clean, spacious layout with focus on products",
-    category: ["Fashion", "Electronics", "Home Decor"]
-  },
-  {
-    id: 2,
-    name: "Vibrant Commerce",
-    image: "/api/placeholder/400/250",
-    description: "Colorful and engaging for fashion & accessories",
-    category: ["Fashion", "Beauty", "Jewelry"]
-  },
-  {
-    id: 3,
-    name: "Professional Business",
-    image: "/api/placeholder/400/250",
-    description: "Corporate look for established brands",
-    category: ["Electronics", "Sports", "Books"]
-  },
-  {
-    id: 4,
-    name: "Creative Boutique",
-    image: "/api/placeholder/400/250",
-    description: "Artistic layout for unique products",
-    category: ["Home Decor", "Jewelry", "Fashion Accessories"]
-  }
+interface FormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  storeName: string;
+  storeCategory: string;
+  storeInstagram: string;
+  websiteType: string;
+  selectedDesign: string;
+  primaryColor: string;
+  agreedToTerms: boolean;
+}
+
+const CATEGORIES = [
+  'Fashion Accessories', 'Footwears', 'Watches', 'Clothing',
+  'Electronics', 'Home Decor', 'Beauty & Cosmetics', 'Jewelry',
+  'Sports Equipment', 'Books', 'Other',
 ];
 
-const OnboardingPage: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
-    personalDetails: {
-      fullName: '', email: '', phone: '', whatsapp: '', whatsappSameAsPhone: false,
-      address: '', pincode: '', district: '', state: '', dob: ''
-    },
-    businessDetails: {
-      storeName: '', storeInstagram: '', storeWhatsapp: '', storePhone: '', storeFacebook: '',
-      storeTagline: '', storeDescription: '', storeCategory: '', returnPolicy: '',
-      shippingPolicy: '', termsConditions: '', aboutStore: '', yearOfStarting: '',
-      primaryColor: '#000000', secondaryColor: '#ffffff'
-    },
-    websiteDetails: {
-      websiteType: '', prepaidShippingCharge: 0, codCharge: 0, hasDomain: false,
-      domainName: '', preferredDomain: '', needSubdomain: false, preferredSubdomain: '',
-      designPreference: '', selectedDesign: '', needTracking: false, specialNotes: '', 
-      additionalFeatures: [] as string[]
-    },
-    paymentLegal: {
-      agreedToTerms: false, paymentOption: '', emiAdvancePaid: false, 
-      fullPaymentAdvancePaid: false, totalAmount: 0, advancePaid: 0, remainingAmount: 0
-    }
+const PLANS = [
+  { value: 'WhatsApp Orders', label: 'WhatsApp Orders', price: '₹5,000', icon: '💬' },
+  { value: 'Online Payment', label: 'Online Payment', price: '₹7,000', icon: '💳', popular: true },
+  { value: 'Custom', label: 'Custom / Offer Based', price: 'Contact Us', icon: '🚀' },
+];
+
+const DESIGNS = [
+  { name: 'Modern Minimal', color: '#f1f5f9' },
+  { name: 'Vibrant Commerce', color: '#fce7f3' },
+  { name: 'Professional', color: '#e0e7ff' },
+  { name: 'Creative Boutique', color: '#fef3c7' },
+];
+
+const inp = (err?: boolean) =>
+  `w-full px-4 py-3 bg-black/30 border rounded-lg text-sm outline-none transition-all focus:border-white focus:ring-2 focus:ring-indigo-100 ${err ? 'border-red-400' : 'border-gray-200'}`;
+
+export default function OnboardingPage() {
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState<FormData>({
+    fullName: '', email: '', phone: '', storeName: '', storeCategory: '',
+    storeInstagram: '', websiteType: '', selectedDesign: '',
+    primaryColor: '#6366f1', agreedToTerms: false,
   });
-
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [loading, setLoading] = useState(false);
-  const [developmentMode, setDevelopmentMode] = useState(false);
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [done, setDone] = useState(false);
 
-  // Development mode auto-fill
-  useEffect(() => {
-    if (developmentMode) {
-      setFormData({
-        personalDetails: {
-          fullName: 'John Doe',
-          email: 'john@example.com',
-          phone: '9876543210',
-          whatsapp: '9876543210',
-          whatsappSameAsPhone: true,
-          address: '123 Business Street, Commercial Area',
-          pincode: '400001',
-          district: 'Mumbai City',
-          state: 'Maharashtra',
-          dob: '1990-01-01'
-        },
-        businessDetails: {
-          storeName: 'Fashion Hub',
-          storeInstagram: '@fashionhub',
-          storeWhatsapp: '9876543210',
-          storePhone: '9876543210',
-          storeFacebook: 'fashionhub',
-          storeTagline: 'Your Style Destination',
-          storeDescription: 'Premium fashion store offering latest trends',
-          storeCategory: 'Fashion Accessories',
-          returnPolicy: '7 days return policy',
-          shippingPolicy: 'Free shipping above ₹999',
-          termsConditions: 'Standard terms apply',
-          aboutStore: 'We are a premium fashion retailer...',
-          yearOfStarting: '2020',
-          primaryColor: '#3B82F6',
-          secondaryColor: '#1E40AF'
-        },
-        websiteDetails: {
-          websiteType: 'Online Payment',
-          prepaidShippingCharge: 49,
-          codCharge: 79,
-          hasDomain: false,
-          domainName: '',
-          preferredDomain: 'fashionhub',
-          needSubdomain: true,
-          preferredSubdomain: 'store',
-          designPreference: 'Modern and clean design',
-          selectedDesign: 'Modern Minimal',
-          needTracking: true,
-          specialNotes: 'Need mobile app like experience',
-          additionalFeatures: ['Wishlist', 'Product Reviews']
-        },
-        paymentLegal: {
-          agreedToTerms: true,
-          paymentOption: 'emi',
-          emiAdvancePaid: false,
-          fullPaymentAdvancePaid: false,
-          totalAmount: 7000,
-          advancePaid: 2000,
-          remainingAmount: 5000
-        }
-      });
-    }
-  }, [developmentMode]);
-
-  const steps = [
-    { id: 1, name: 'Personal Details', description: 'Your basic information' },
-    { id: 2, name: 'Business Info', description: 'About your store' },
-    { id: 3, name: 'Website Design', description: 'Choose your design' },
-    { id: 4, name: 'Final Steps', description: 'Review & submit' }
-  ];
-
-  const handleInputChange = (section: string, field: string, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      [section]: {
-        ...prev[section as keyof typeof prev],
-        [field]: value
-      }
-    }));
-    
-    // Clear error when user starts typing
-    if (formErrors[`${section}.${field}`]) {
-      setFormErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[`${section}.${field}`];
-        return newErrors;
-      });
-    }
+  const set = (field: keyof FormData, value: unknown) => {
+    setForm(p => ({ ...p, [field]: value }));
+    setErrors(p => { const n = { ...p }; delete n[field]; return n; });
   };
 
-  const validateStep = (step: number): boolean => {
-    const errors: Record<string, string> = {};
-
-    if (step === 1) {
-      if (!formData.personalDetails.fullName) errors['personalDetails.fullName'] = 'Full name is required';
-      if (!formData.personalDetails.email) errors['personalDetails.email'] = 'Email is required';
-      if (!formData.personalDetails.phone) errors['personalDetails.phone'] = 'Phone is required';
-      if (!formData.personalDetails.address) errors['personalDetails.address'] = 'Address is required';
-      if (!formData.personalDetails.pincode) errors['personalDetails.pincode'] = 'Pincode is required';
+  const validate = (s: number) => {
+    const e: Partial<Record<keyof FormData, string>> = {};
+    if (s === 1) {
+      if (!form.fullName) e.fullName = 'Required';
+      if (!form.email) e.email = 'Required';
+      if (!form.phone) e.phone = 'Required';
     }
-
-    if (step === 2) {
-      if (!formData.businessDetails.storeName) errors['businessDetails.storeName'] = 'Store name is required';
-      if (!formData.businessDetails.storeCategory) errors['businessDetails.storeCategory'] = 'Store category is required';
+    if (s === 2) {
+      if (!form.storeName) e.storeName = 'Required';
+      if (!form.storeCategory) e.storeCategory = 'Required';
     }
-
-    if (step === 3) {
-      if (!formData.websiteDetails.websiteType) errors['websiteDetails.websiteType'] = 'Website type is required';
+    if (s === 3) {
+      if (!form.websiteType) e.websiteType = 'Please select a plan';
     }
-
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+    setErrors(e);
+    return !Object.keys(e).length;
   };
 
-  const nextStep = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(prev => Math.min(prev + 1, steps.length));
-    }
-  };
+  const next = () => validate(step) && setStep(s => s + 1);
+  const prev = () => setStep(s => s - 1);
 
-  const prevStep = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 1));
-  };
-  const handleSubmit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateStep(4)) {
-      setLoading(true);
-      
-      try {
-        const response = await fetch('/api/submit-onboarding', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ...formData,
-            submittedAt: new Date().toISOString(),
-            status: 'new'
-          })
-        });
-  
-        if (response.ok) {
-          // Store submission success in sessionStorage
-          sessionStorage.setItem('onboarding_submitted', 'true');
-          // Store submission timestamp
-          sessionStorage.setItem('onboarding_timestamp', Date.now().toString());
-          
-          // Redirect to thank you page
-          window.location.href = '/onboarding/thank-you';
-        } else {
-          alert('Error submitting form. Please try again.');
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error submitting form:', error);
-        alert('Error submitting form. Please try again.');
-        setLoading(false);
-      }
-    }
+    if (!form.agreedToTerms) return;
+    setLoading(true);
+    try {
+      await fetch('/api/submit-onboarding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, submittedAt: new Date().toISOString() }),
+      });
+    } catch {}
+    setLoading(false);
+    setDone(true);
   };
 
-  const getPriceFromWebsiteType = (type: string): number => {
-    const prices: Record<string, number> = {
-      'Online Payment': 7000,
-      'WhatsApp Orders': 5000,
-      'Online Payment + Tracking': 12000
-    };
-    return prices[type] || 0;
-  };
+  if (done) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 text-center max-w-sm w-full">
+          <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-7 h-7 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-1">Request Submitted!</h2>
+          <p className="text-gray-500 text-sm">Hi {form.fullName}, we'll contact you within 24 hours to set up <strong className="text-gray-700">{form.storeName || 'your store'}</strong>.</p>
+        </motion.div>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    if (formData.websiteDetails.websiteType) {
-      const price = getPriceFromWebsiteType(formData.websiteDetails.websiteType);
-      handleInputChange('paymentLegal', 'totalAmount', price);
-    }
-  }, [formData.websiteDetails.websiteType]);
+  const steps = ['You', 'Your Store', 'Plan', 'Confirm'];
 
   return (
-    <div className="min-h-screen bg-background">
-      <TitleHeader title="Client Onboarding" subtitle='Onboarding'/>
-      
-      {/* Development Mode Toggle */}
-      {/* <div className="max-w-4xl mx-auto p-6">
-        <div className="flex justify-end mb-4">
-          <label className="flex items-center space-x-2 text-sm">
-            <input
-              type="checkbox"
-              checked={developmentMode}
-              onChange={(e) => setDevelopmentMode(e.target.checked)}
-              className="rounded border-border"
-            />
-            <span>Development Mode (Auto-fill)</span>
-          </label>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex flex-col">
+      {/* Top bar */}
+      <div className="border-b border-white/10 bg-black/20 backdrop-blur-sm px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <span className="font-semibold text-white text-md italic">Shopigo</span>
         </div>
-      </div> */}
+        <span className="text-xs text-gray-400">Step {step} of {steps.length}</span>
+      </div>
 
-      <div className="max-w-4xl mx-auto p-2 mt-24">
-        {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex justify-between mb-2">
-            {steps.map((step) => (
-              <div key={step.id} className="flex flex-col items-center flex-1">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  currentStep >= step.id 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-muted text-muted-foreground'
+      {/* Progress bar */}
+      <div className="h-0.5 bg-gray-700">
+        <motion.div className="h-full bg-indigo-500"
+          animate={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
+          transition={{ duration: 0.4 }} />
+      </div>
+
+      <div className="flex-1 flex items-start justify-center px-4 py-10">
+        <div className="w-full max-w-md">
+          {/* Step indicators */}
+          <div className="flex justify-between mb-8 px-1">
+            {steps.map((s, i) => (
+              <div key={s} className="flex flex-col items-center gap-1">
+                <div className={`w-6 h-6 rounded-full text-xs font-semibold flex items-center justify-center transition-all ${
+                  step > i + 1 ? 'bg-indigo-500 text-white' :
+                  step === i + 1 ? 'bg-indigo-500 text-white ring-4 ring-indigo-500/30' :
+                  'bg-gray-700 text-gray-400'
                 }`}>
-                  {step.id}
+                  {step > i + 1 ? '✓' : i + 1}
                 </div>
-                <span className={`text-xs mt-2 text-center ${
-                  currentStep >= step.id ? 'text-foreground' : 'text-muted-foreground'
-                }`}>
-                  {step.name}
-                </span>
+                <span className={`text-xs font-semibold pt-2 ${step === i + 1 ? 'text-indigo-400' : 'text-gray-500'}`}>{s}</span>
               </div>
             ))}
           </div>
-          <div className="relative h-2 bg-muted rounded-full">
-            <motion.div
-              className="absolute top-0 left-0 h-full bg-primary rounded-full"
-              initial={{ width: '0%' }}
-              animate={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
-              transition={{ duration: 0.3 }}
-            />
-          </div>
-        </div>
 
-        <form onSubmit={handleSubmit} className="bg-card rounded-lg shadow-lg p-2 space-y-8">
-          <AnimatePresence mode="wait">
-            {/* Step 1: Personal Details */}
-            {currentStep === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-6"
-              >
-                <h2 className="text-2xl font-bold">Personal Details</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    { label: 'Full Name *', field: 'fullName', type: 'text' },
-                    { label: 'Email *', field: 'email', type: 'email' },
-                    { label: 'Phone *', field: 'phone', type: 'tel' },
-                    { label: 'WhatsApp *', field: 'whatsapp', type: 'tel' },
-                  ].map(({ label, field, type }) => (
-                    <div key={field}>
-                      <label className="block mb-2 text-sm font-medium">{label}</label>
-                      <input
-                        type={type}
-                        required
-                        className={`w-full p-3 border rounded-lg transition-colors ${
-                          formErrors[`personalDetails.${field}`] 
-                            ? 'border-destructive' 
-                            : 'border-input'
-                        }`}
-                        value={formData.personalDetails[field as keyof typeof formData.personalDetails] as string}
-                        onChange={(e) => handleInputChange('personalDetails', field, e.target.value)}
-                      />
-                      {formErrors[`personalDetails.${field}`] && (
-                        <p className="text-destructive text-xs mt-1">
-                          {formErrors[`personalDetails.${field}`]}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                  
-                  <div className="md:col-span-2 flex items-center space-x-2 p-3 bg-muted rounded-lg">
-                    <input
-                      type="checkbox"
-                      checked={formData.personalDetails.whatsappSameAsPhone}
-                      onChange={(e) => {
-                        handleInputChange('personalDetails', 'whatsappSameAsPhone', e.target.checked);
-                        if (e.target.checked) {
-                          handleInputChange('personalDetails', 'whatsapp', formData.personalDetails.phone);
-                        }
-                      }}
-                      className="rounded border-border"
-                    />
-                    <label className="text-sm">WhatsApp same as Phone</label>
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block mb-2 text-sm font-medium">Address *</label>
-                    <textarea
-                      required
-                      className={`w-full p-3 border rounded-lg transition-colors ${
-                        formErrors['personalDetails.address'] 
-                          ? 'border-destructive' 
-                          : 'border-input'
-                      }`}
-                      value={formData.personalDetails.address}
-                      onChange={(e) => handleInputChange('personalDetails', 'address', e.target.value)}
-                    />
-                    {formErrors['personalDetails.address'] && (
-                      <p className="text-destructive text-xs mt-1">
-                        {formErrors['personalDetails.address']}
-                      </p>
-                    )}
-                  </div>
-
-                  {[
-                    { label: 'Pincode *', field: 'pincode' },
-                    { label: 'District *', field: 'district' },
-                    { label: 'State *', field: 'state' },
-                    { label: 'Date of Birth *', field: 'dob', type: 'date' },
-                  ].map(({ label, field, type = 'text' }) => (
-                    <div key={field}>
-                      <label className="block mb-2 text-sm font-medium">{label}</label>
-                      <input
-                        type={type}
-                        required
-                        className={`w-full p-3 border rounded-lg transition-colors ${
-                          formErrors[`personalDetails.${field}`] 
-                            ? 'border-destructive' 
-                            : 'border-input'
-                        }`}
-                        value={formData.personalDetails[field as keyof typeof formData.personalDetails] as string}
-                        onChange={(e) => handleInputChange('personalDetails', field, e.target.value)}
-                      />
-                      {formErrors[`personalDetails.${field}`] && (
-                        <p className="text-destructive text-xs mt-1">
-                          {formErrors[`personalDetails.${field}`]}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 2: Business Details */}
-            {currentStep === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-6"
-              >
-                <h2 className="text-2xl font-bold">Business Details</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={submit}>
+            <AnimatePresence mode="wait">
+              {step === 1 && (
+                <motion.div key="s1" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }}
+                  transition={{ duration: 0.22 }}
+                  className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6 space-y-4 shadow-xl">
                   <div>
-                    <label className="block mb-2 text-sm font-medium">Store Name *</label>
-                    <input
-                      type="text"
-                      required
-                      className={`w-full p-3 border rounded-lg transition-colors ${
-                        formErrors['businessDetails.storeName'] 
-                          ? 'border-destructive' 
-                          : 'border-input'
-                      }`}
-                      value={formData.businessDetails.storeName}
-                      onChange={(e) => handleInputChange('businessDetails', 'storeName', e.target.value)}
-                    />
-                    {formErrors['businessDetails.storeName'] && (
-                      <p className="text-destructive text-xs mt-1">
-                        {formErrors['businessDetails.storeName']}
-                      </p>
-                    )}
+                    <h2 className="text-lg font-semibold text-white">About You</h2>
+                    <p className="text-sm text-gray-300">So we know who to contact</p>
                   </div>
-
                   <div>
-                    <label className="block mb-2 text-sm font-medium">Store Category *</label>
-                    <select
-                      required
-                      className={`w-full p-3 border rounded-lg transition-colors ${
-                        formErrors['businessDetails.storeCategory'] 
-                          ? 'border-destructive' 
-                          : 'border-input'
-                      }`}
-                      value={formData.businessDetails.storeCategory}
-                      onChange={(e) => handleInputChange('businessDetails', 'storeCategory', e.target.value)}
-                    >
-                      <option value="">Select Category</option>
-                      <option value="Fashion Accessories">Fashion Accessories</option>
-                      <option value="Footwears">Footwears</option>
-                      <option value="Watches">Watches</option>
-                      <option value="Clothing">Clothing</option>
-                      <option value="Electronics">Electronics</option>
-                      <option value="Home Decor">Home Decor</option>
-                      <option value="Beauty & Cosmetics">Beauty & Cosmetics</option>
-                      <option value="Jewelry">Jewelry</option>
-                      <option value="Sports Equipment">Sports Equipment</option>
-                      <option value="Books">Books</option>
-                      <option value="Other">Other</option>
+                    <label className="block text-xs font-medium text-gray-300 mb-1.5">Full Name *</label>
+                    <input className={inp(!!errors.fullName)} type="text" placeholder="Your name"
+                      value={form.fullName} onChange={e => set('fullName', e.target.value)} autoFocus />
+                    {errors.fullName && <p className="text-red-400 text-xs mt-1">{errors.fullName}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1.5">Email *</label>
+                    <input className={inp(!!errors.email)} type="email" placeholder="Email Address"
+                      value={form.email} onChange={e => set('email', e.target.value)} />
+                    {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1.5">WhatsApp / Phone *</label>
+                    <input className={inp(!!errors.phone)} type="tel" placeholder="+91 98765 43210"
+                      value={form.phone} onChange={e => set('phone', e.target.value)} />
+                    {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
+                  </div>
+                </motion.div>
+              )}
+
+              {step === 2 && (
+                <motion.div key="s2" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }}
+                  transition={{ duration: 0.22 }}
+                  className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6 space-y-4 shadow-xl">
+                  <div>
+                    <h2 className="text-lg font-semibold text-white">Your Store</h2>
+                    <p className="text-sm text-gray-300">Basic info about your business</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1.5">Store Name *</label>
+                    <input className={inp(!!errors.storeName)} type="text" placeholder="e.g. Fashion Hub"
+                      value={form.storeName} onChange={e => set('storeName', e.target.value)} autoFocus />
+                    {errors.storeName && <p className="text-red-400 text-xs mt-1">{errors.storeName}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1.5">Category *</label>
+                    <select className={inp(!!errors.storeCategory)}
+                      value={form.storeCategory} onChange={e => set('storeCategory', e.target.value)}>
+                      <option value="">Select category</option>
+                      {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
-                    {formErrors['businessDetails.storeCategory'] && (
-                      <p className="text-destructive text-xs mt-1">
-                        {formErrors['businessDetails.storeCategory']}
-                      </p>
-                    )}
+                    {errors.storeCategory && <p className="text-red-400 text-xs mt-1">{errors.storeCategory}</p>}
                   </div>
-
-                  {[
-                    { label: 'Store Instagram', field: 'storeInstagram' },
-                    { label: 'Store WhatsApp', field: 'storeWhatsapp' },
-                    { label: 'Store Phone', field: 'storePhone' },
-                    { label: 'Store Facebook', field: 'storeFacebook' },
-                  ].map(({ label, field }) => (
-                    <div key={field}>
-                      <label className="block mb-2 text-sm font-medium">{label}</label>
-                      <input
-                        type="text"
-                        className="w-full p-3 border border-input rounded-lg transition-colors"
-                        value={formData.businessDetails[field as keyof typeof formData.businessDetails] as string}
-                        onChange={(e) => handleInputChange('businessDetails', field, e.target.value)}
-                      />
-                    </div>
-                  ))}
-
-                  <div className="md:col-span-2">
-                    <label className="block mb-2 text-sm font-medium">Store Description</label>
-                    <textarea
-                      className="w-full p-3 border border-input rounded-lg transition-colors"
-                      rows={3}
-                      value={formData.businessDetails.storeDescription}
-                      onChange={(e) => handleInputChange('businessDetails', 'storeDescription', e.target.value)}
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block mb-2 text-sm font-medium">About Your Store</label>
-                    <textarea
-                      className="w-full p-3 border border-input rounded-lg transition-colors"
-                      rows={4}
-                      value={formData.businessDetails.aboutStore}
-                      onChange={(e) => handleInputChange('businessDetails', 'aboutStore', e.target.value)}
-                    />
-                  </div>
-
                   <div>
-                    <label className="block mb-2 text-sm font-medium">Primary Color</label>
-                    <div className="flex space-x-2">
-                      <input
-                        type="color"
-                        className="w-12 h-12 rounded border border-input"
-                        value={formData.businessDetails.primaryColor}
-                        onChange={(e) => handleInputChange('businessDetails', 'primaryColor', e.target.value)}
-                      />
-                      <input
-                        type="text"
-                        className="flex-1 p-3 border border-input rounded-lg"
-                        value={formData.businessDetails.primaryColor}
-                        onChange={(e) => handleInputChange('businessDetails', 'primaryColor', e.target.value)}
-                      />
+                    <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                      Instagram Handle <span className="text-gray-400 font-normal">(optional)</span>
+                    </label>
+                    <input className={inp()} type="text" placeholder="@yourstore"
+                      value={form.storeInstagram} onChange={e => set('storeInstagram', e.target.value)} />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-300 mb-1.5">
+                      Brand Color <span className="text-gray-400 font-normal">(optional)</span>
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <input type="color" className="w-10 h-10 rounded-lg border border-white/20 bg-white/10 cursor-pointer p-0.5"
+                        value={form.primaryColor} onChange={e => set('primaryColor', e.target.value)} />
+                      <span className="text-sm text-gray-300 font-mono">{form.primaryColor}</span>
                     </div>
                   </div>
+                </motion.div>
+              )}
 
+              {step === 3 && (
+                <motion.div key="s3" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }}
+                  transition={{ duration: 0.22 }}
+                  className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6 space-y-5 shadow-xl">
                   <div>
-                    <label className="block mb-2 text-sm font-medium">Secondary Color</label>
-                    <div className="flex space-x-2">
-                      <input
-                        type="color"
-                        className="w-12 h-12 rounded border border-input"
-                        value={formData.businessDetails.secondaryColor}
-                        onChange={(e) => handleInputChange('businessDetails', 'secondaryColor', e.target.value)}
-                      />
-                      <input
-                        type="text"
-                        className="flex-1 p-3 border border-input rounded-lg"
-                        value={formData.businessDetails.secondaryColor}
-                        onChange={(e) => handleInputChange('businessDetails', 'secondaryColor', e.target.value)}
-                      />
-                    </div>
+                    <h2 className="text-lg font-semibold text-white">Choose a Plan</h2>
+                    <p className="text-sm text-gray-300">Pick what works best for your store</p>
                   </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 3: Website Design */}
-            {currentStep === 3 && (
-              <motion.div
-                key="step3"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-6"
-              >
-                <h2 className="text-2xl font-bold">Website Design & Features</h2>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block mb-2 text-sm font-medium">Website Type *</label>
-                    <select
-                      required
-                      className={`w-full p-3 border rounded-lg transition-colors ${
-                        formErrors['websiteDetails.websiteType'] 
-                          ? 'border-destructive' 
-                          : 'border-input'
-                      }`}
-                      value={formData.websiteDetails.websiteType}
-                      onChange={(e) => handleInputChange('websiteDetails', 'websiteType', e.target.value)}
-                    >
-                      <option value="">Select Type</option>
-                      <option value="Online Payment">Online Payment - ₹7000</option>
-                      <option value="WhatsApp Orders">WhatsApp Orders - ₹5000</option>
-                      <option value="Online Payment + Tracking">Online Payment + Tracking - ₹12000</option>
-                    </select>
-                    {formErrors['websiteDetails.websiteType'] && (
-                      <p className="text-destructive text-xs mt-1">
-                        {formErrors['websiteDetails.websiteType']}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="bg-muted p-4 rounded-lg">
-                    <h3 className="font-semibold mb-2">Selected Plan</h3>
-                    <p className="text-2xl font-bold text-primary">
-                      ₹{getPriceFromWebsiteType(formData.websiteDetails.websiteType).toLocaleString()}
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {formData.websiteDetails.websiteType}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Website Design Samples */}
-                <div className="space-y-4">
-                  <label className="block text-sm font-medium">Choose Design Style</label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {websiteDesigns.map((design) => (
-                      <motion.div
-                        key={design.id}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                          formData.websiteDetails.selectedDesign === design.name
-                            ? 'border-primary bg-primary/5'
-                            : 'border-input hover:border-primary/50'
-                        }`}
-                        onClick={() => handleInputChange('websiteDetails', 'selectedDesign', design.name)}
-                      >
-                        <div className="aspect-video bg-muted rounded-md mb-3 flex items-center justify-center">
-                          <div className="text-center">
-                            <div className="w-full h-32 bg-gradient-to-br from-primary/20 to-secondary/20 rounded mb-2"></div>
-                            <span className="text-sm text-muted-foreground">Design Preview: {design.name}</span>
+                  <div className="space-y-2">
+                    {PLANS.map(plan => (
+                      <label key={plan.value}
+                        className={`flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${
+                          form.websiteType === plan.value
+                            ? 'border-indigo-500 bg-indigo-500/20'
+                            : 'border-white/20 hover:border-white/40 bg-white/5'
+                        }`}>
+                        <input type="radio" name="plan" className="hidden"
+                          checked={form.websiteType === plan.value}
+                          onChange={() => set('websiteType', plan.value)} />
+                        <span className="text-xl">{plan.icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold text-white">{plan.label}</span>
+                            {plan.popular && (
+                              <span className="px-1.5 py-0.5 rounded-md bg-indigo-500 text-white text-xs font-medium">Popular</span>
+                            )}
                           </div>
                         </div>
-                        <h3 className="font-semibold">{design.name}</h3>
-                        <p className="text-sm text-muted-foreground">{design.description}</p>
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {design.category.map(cat => (
-                            <span key={cat} className="text-xs bg-muted px-2 py-1 rounded">
-                              {cat}
-                            </span>
-                          ))}
+                        <span className="text-sm font-bold text-white shrink-0">{plan.price}</span>
+                        <div className={`w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center ${
+                          form.websiteType === plan.value ? 'border-indigo-500 bg-indigo-500' : 'border-white/40'
+                        }`}>
+                          {form.websiteType === plan.value && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                         </div>
-                      </motion.div>
+                      </label>
                     ))}
+                    {errors.websiteType && <p className="text-red-400 text-xs">{errors.websiteType}</p>}
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block mb-2 text-sm font-medium">Design Preference</label>
-                    <input
-                      type="text"
-                      className="w-full p-3 border border-input rounded-lg"
-                      placeholder="Describe your design preferences..."
-                      value={formData.websiteDetails.designPreference}
-                      onChange={(e) => handleInputChange('websiteDetails', 'designPreference', e.target.value)}
-                    />
+                    <label className="block text-xs font-medium text-gray-300 mb-2">
+                      Design Preference <span className="text-gray-400 font-normal">(optional)</span>
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {DESIGNS.map(d => (
+                        <div key={d.name} onClick={() => set('selectedDesign', d.name)}
+                          className={`flex items-center gap-2.5 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                            form.selectedDesign === d.name ? 'border-indigo-500 bg-indigo-500/20' : 'border-white/20 hover:border-white/40 bg-white/5'
+                          }`}>
+                          <div className="w-5 h-5 rounded shrink-0" style={{ background: d.color, border: '1px solid rgba(255,255,255,0.2)' }} />
+                          <span className="text-xs font-medium text-white leading-tight">{d.name}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
+                </motion.div>
+              )}
 
-                  <div className="flex items-center space-x-2 p-4 bg-muted rounded-lg">
-                    <input
-                      type="checkbox"
-                      checked={formData.websiteDetails.needTracking}
-                      onChange={(e) => handleInputChange('websiteDetails', 'needTracking', e.target.checked)}
-                      className="rounded border-border"
-                    />
-                    <label className="text-sm font-medium">Include Order Tracking System</label>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block mb-2 text-sm font-medium">Special Notes & Requirements</label>
-                  <textarea
-                    className="w-full p-3 border border-input rounded-lg"
-                    rows={4}
-                    placeholder="Any special requirements, features, or notes for your website..."
-                    value={formData.websiteDetails.specialNotes}
-                    onChange={(e) => handleInputChange('websiteDetails', 'specialNotes', e.target.value)}
-                  />
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 4: Final Review */}
-            {currentStep === 4 && (
-              <motion.div
-                key="step4"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="space-y-6"
-              >
-                <h2 className="text-2xl font-bold">Review & Submit</h2>
-                
-                <div className="space-y-6">
-                  {/* Personal Details Review */}
-                  <div className="border border-input rounded-lg p-4">
-                    <h3 className="font-semibold mb-3">Personal Details</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                      <div><strong>Name:</strong> {formData.personalDetails.fullName}</div>
-                      <div><strong>Email:</strong> {formData.personalDetails.email}</div>
-                      <div><strong>Phone:</strong> {formData.personalDetails.phone}</div>
-                      <div><strong>Address:</strong> {formData.personalDetails.address}</div>
+              {step === 4 && (
+                <motion.div key="s4" initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }}
+                  transition={{ duration: 0.22 }}
+                  className="space-y-3">
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-6 shadow-xl">
+                    <h2 className="text-lg font-semibold text-white mb-4">Review</h2>
+                    <div className="space-y-2.5">
+                      {[
+                        { label: 'Name', value: form.fullName },
+                        { label: 'Email', value: form.email },
+                        { label: 'Phone', value: form.phone },
+                        { label: 'Store', value: form.storeName },
+                        { label: 'Category', value: form.storeCategory },
+                        { label: 'Plan', value: form.websiteType },
+                        { label: 'Design', value: form.selectedDesign || '—' },
+                      ].map(({ label, value }) => (
+                        <div key={label} className="flex justify-between items-center text-sm border-b border-white/10 pb-2.5 last:border-0 last:pb-0">
+                          <span className="text-gray-400 w-20 shrink-0">{label}</span>
+                          <span className="text-white font-medium text-right">{value || '—'}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  {/* Business Details Review */}
-                  <div className="border border-input rounded-lg p-4">
-                    <h3 className="font-semibold mb-3">Business Details</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                      <div><strong>Store Name:</strong> {formData.businessDetails.storeName}</div>
-                      <div><strong>Category:</strong> {formData.businessDetails.storeCategory}</div>
-                      <div><strong>Instagram:</strong> {formData.businessDetails.storeInstagram || 'Not provided'}</div>
-                      <div><strong>Description:</strong> {formData.businessDetails.storeDescription || 'Not provided'}</div>
+                  <label className={`flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all bg-white/10 backdrop-blur-md ${
+                    form.agreedToTerms ? 'border-indigo-500 bg-indigo-500/20' : 'border-white/20 hover:border-white/40'
+                  }`}>
+                    <div className={`w-5 h-5 rounded border-2 shrink-0 mt-0.5 flex items-center justify-center transition-all ${
+                      form.agreedToTerms ? 'bg-indigo-500 border-indigo-500' : 'border-white/40'
+                    }`}>
+                      {form.agreedToTerms && (
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
                     </div>
-                  </div>
+                    <input type="checkbox" className="hidden" checked={form.agreedToTerms}
+                      onChange={e => set('agreedToTerms', e.target.checked)} />
+                    <p className="text-sm text-gray-300">I confirm the above details are correct and agree to the{' '}
+                      <span className="text-indigo-400 font-medium">Terms & Conditions</span>.
+                    </p>
+                  </label>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-                  {/* Website Details Review */}
-                  <div className="border border-input rounded-lg p-4">
-                    <h3 className="font-semibold mb-3">Website Details</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                      <div><strong>Website Type:</strong> {formData.websiteDetails.websiteType}</div>
-                      <div><strong>Selected Design:</strong> {formData.websiteDetails.selectedDesign || 'Not selected'}</div>
-                      <div><strong>Total Amount:</strong> ₹{formData.paymentLegal.totalAmount.toLocaleString()}</div>
-                      <div><strong>Order Tracking:</strong> {formData.websiteDetails.needTracking ? 'Yes' : 'No'}</div>
-                    </div>
-                  </div>
+            {/* Nav */}
+            <div className="flex items-center justify-between mt-5">
+              {step > 1 ? (
+                <Button type="button" onClick={prev} variant="outline" className="bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20">
+                  ← Back
+                </Button>
+              ) : <div />}
 
-                  {/* Terms Agreement */}
-                  <div className="border border-input rounded-lg p-4">
-                    <div className="flex items-start space-x-3">
-                      <input
-                        type="checkbox"
-                        required
-                        checked={formData.paymentLegal.agreedToTerms}
-                        onChange={(e) => handleInputChange('paymentLegal', 'agreedToTerms', e.target.checked)}
-                        className="mt-1 rounded border-border"
-                      />
-                      <div>
-                        <label className="font-medium">Agreement to Terms & Conditions</label>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          I agree to the terms and conditions and understand that I'll be contacted for payment details and further process. 
-                          I confirm that all information provided is accurate to the best of my knowledge.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Navigation Buttons */}
-          <div className="flex justify-between pt-6 border-t border-border">
-            <button
-              type="button"
-              onClick={prevStep}
-              disabled={currentStep === 1}
-              className="px-6 py-3 border border-input rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
-            >
-              Previous
-            </button>
-
-            {currentStep < steps.length ? (
-              <button
-                type="button"
-                onClick={nextStep}
-                className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                Next Step
-              </button>
-            ) : (
-              <button
-                type="submit"
-                disabled={loading || !formData.paymentLegal.agreedToTerms}
-                className="px-6 py-3 bg-primary text-primary-foreground rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/90 transition-colors"
-              >
-                {loading ? (
-                  <span className="flex items-center">
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="w-4 h-4 border-2 border-current border-t-transparent rounded-full mr-2"
-                    />
-                    Submitting...
-                  </span>
-                ) : (
-                  'Submit Onboarding Request'
-                )}
-              </button>
-            )}
-          </div>
-        </form>
+              {step < 4 ? (
+                <Button type="button" onClick={next} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                  Continue →
+                </Button>
+              ) : (
+                <Button type="submit" disabled={loading || !form.agreedToTerms} className="bg-indigo-600 hover:bg-indigo-700 text-white">
+                  {loading && <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />}
+                  {loading ? 'Submitting…' : 'Submit Request'}
+                </Button>
+              )}
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
-};
-
-export default OnboardingPage;
+}
